@@ -1,0 +1,437 @@
+﻿<Page x:Class="EP_0201_MW.Views.Pages.ReportsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Отчеты">
+
+    <Page.Resources>
+        <Style x:Key="ReportHeaderStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#2C3E50"/>
+            <Setter Property="Margin" Value="0,5,0,10"/>
+        </Style>
+
+        <Style x:Key="ReportValueStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#34495E"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+        </Style>
+
+        <Style x:Key="SummaryRowStyle" TargetType="Border">
+            <Setter Property="Background" Value="#2C3E50"/>
+            <Setter Property="CornerRadius" Value="5"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Margin" Value="0,5"/>
+        </Style>
+    </Page.Resources>
+
+    <Grid Background="#ECF0F1">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Панель выбора отчетов -->
+        <Border Background="White" Margin="10" CornerRadius="8">
+            <Border Padding="15">
+                <StackPanel>
+                    <TextBlock Text="Выберите отчет" 
+                               FontSize="18" 
+                               FontWeight="Bold" 
+                               Foreground="#2C3E50"
+                               Margin="0,0,0,20"/>
+
+                    <ListBox x:Name="ListReports" 
+                             SelectionChanged="ListReports_SelectionChanged" 
+                             BorderThickness="0"
+                             Background="Transparent">
+                        <ListBoxItem Content="📊 Занятость складов" 
+                                    Tag="Occupancy" 
+                                    Padding="10,8"
+                                    FontSize="14"
+                                    Foreground="#2C3E50"
+                                    Cursor="Hand">
+                            <ListBoxItem.Style>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListBoxItem">
+                                                <Border Background="Transparent" 
+                                                        Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="#E8F4FD"/>
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                            <Setter Property="Foreground" Value="#2980B9"/>
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#F5F7FA"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListBoxItem.Style>
+                        </ListBoxItem>
+
+                        <ListBoxItem Content="💰 Доход по объектам" 
+                                    Tag="Income" 
+                                    Padding="10,8"
+                                    FontSize="14"
+                                    Foreground="#2C3E50"
+                                    Cursor="Hand">
+                            <ListBoxItem.Style>
+                                <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="#E8F4FD"/>
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                            <Setter Property="Foreground" Value="#2980B9"/>
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#F5F7FA"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListBoxItem.Style>
+                        </ListBoxItem>
+
+                        <ListBoxItem Content="📋 Клиенты с задолженностями" 
+                                    Tag="Debts" 
+                                    Padding="10,8"
+                                    FontSize="14"
+                                    Foreground="#2C3E50"
+                                    Cursor="Hand">
+                            <ListBoxItem.Style>
+                                <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="#E8F4FD"/>
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                            <Setter Property="Foreground" Value="#2980B9"/>
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#F5F7FA"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListBoxItem.Style>
+                        </ListBoxItem>
+                    </ListBox>
+
+                    <Button x:Name="BtnGeneratePdf" 
+                            Content="📄 Сформировать PDF" 
+                            Margin="0,20,0,0" 
+                            Height="40"
+                            FontSize="14"
+                            Background="#27AE60"
+                            Foreground="White"
+                            BorderThickness="0"
+                            IsEnabled="False" 
+                            Click="BtnGeneratePdf_Click"
+                            Cursor="Hand">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Opacity" Value="0.7"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsEnabled" Value="True">
+                                        <Setter Property="Opacity" Value="1"/>
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#229954"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
+            </Border>
+        </Border>
+
+        <!-- Панель предпросмотра отчета -->
+        <Border Grid.Column="1" 
+                Margin="10" 
+                Background="White" 
+                CornerRadius="8"
+                BorderBrush="#D7DBDD"
+                BorderThickness="1">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="20">
+                <StackPanel>
+                    <!-- Шапка отчета -->
+                    <Border Background="#2C3E50" 
+                            CornerRadius="8,8,0,0" 
+                            Padding="20,15"
+                            Margin="0,0,0,20">
+                        <Grid>
+                            <StackPanel>
+                                <TextBlock Text="ООО «МастерСклад»" 
+                                           FontSize="20" 
+                                           FontWeight="Bold"
+                                           Foreground="White"/>
+                                <TextBlock Text="Отчет" 
+                                           FontSize="16"
+                                           Foreground="#BDC3C7"
+                                           Margin="0,5,0,0"/>
+                            </StackPanel>
+                            <StackPanel HorizontalAlignment="Right">
+                                <TextBlock Text="{Binding ElementName=TxtReportDate, Path=Text}"
+                                           FontSize="14"
+                                           Foreground="White"/>
+                                <TextBlock Text="г. Москва"
+                                           FontSize="12"
+                                           Foreground="#BDC3C7"
+                                           Margin="0,5,0,0"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Заголовок и метаданные -->
+                    <StackPanel Margin="0,0,0,25">
+                        <TextBlock x:Name="TxtReportHeader" 
+                                   Text="Предварительный просмотр отчета"
+                                   FontSize="24"
+                                   FontWeight="Bold"
+                                   Foreground="#2C3E50"
+                                   Margin="0,0,0,10"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Дата формирования:" Style="{StaticResource ReportHeaderStyle}"/>
+                                <TextBlock x:Name="TxtReportDate" Text="" Style="{StaticResource ReportValueStyle}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Период отчета:" Style="{StaticResource ReportHeaderStyle}"/>
+                                <TextBlock x:Name="TxtReportPeriod" Text="" Style="{StaticResource ReportValueStyle}"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+
+                    <!-- Статистика и сводка -->
+                    <Border Style="{StaticResource SummaryRowStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Ключевые показатели" 
+                                       FontSize="16"
+                                       FontWeight="Bold"
+                                       Foreground="White"
+                                       Margin="0,0,0,10"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock x:Name="TxtStat1Label" Text="" 
+                                               Foreground="#BDC3C7" 
+                                               FontSize="12"/>
+                                    <TextBlock x:Name="TxtStat1Value" Text="" 
+                                               Foreground="White" 
+                                               FontSize="18"
+                                               FontWeight="Bold"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock x:Name="TxtStat2Label" Text="" 
+                                               Foreground="#BDC3C7" 
+                                               FontSize="12"/>
+                                    <TextBlock x:Name="TxtStat2Value" Text="" 
+                                               Foreground="White" 
+                                               FontSize="18"
+                                               FontWeight="Bold"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock x:Name="TxtStat3Label" Text="" 
+                                               Foreground="#BDC3C7" 
+                                               FontSize="12"/>
+                                    <TextBlock x:Name="TxtStat3Value" Text="" 
+                                               Foreground="White" 
+                                               FontSize="18"
+                                               FontWeight="Bold"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Детали отчета -->
+                    <Border Margin="0,20,0,0" 
+                            BorderBrush="#D7DBDD" 
+                            BorderThickness="1"
+                            CornerRadius="5"
+                            Padding="0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Заголовок таблицы -->
+                            <Border Background="#F8F9FA" 
+                                    CornerRadius="5,5,0,0"
+                                    Padding="15,10"
+                                    BorderBrush="#D7DBDD"
+                                    BorderThickness="0,0,0,1">
+                                <TextBlock Text="Детали отчета" 
+                                           FontSize="16"
+                                           FontWeight="SemiBold"
+                                           Foreground="#2C3E50"/>
+                            </Border>
+
+                            <!-- Таблица с данными -->
+                            <DataGrid x:Name="DGridReportDetails" 
+                                     Grid.Row="1"
+                                     AutoGenerateColumns="True"
+                                     IsReadOnly="True"
+                                     HeadersVisibility="Column"
+                                     BorderThickness="0"
+                                     RowHeaderWidth="0"
+                                     SelectionMode="Single"
+                                     CanUserAddRows="False"
+                                     CanUserDeleteRows="False"
+                                     CanUserReorderColumns="False"
+                                     CanUserResizeColumns="True"
+                                     CanUserResizeRows="False"
+                                     CanUserSortColumns="True"
+                                     GridLinesVisibility="Horizontal"
+                                     HorizontalGridLinesBrush="#ECF0F1"
+                                     VerticalGridLinesBrush="Transparent"
+                                     Background="White">
+                                <DataGrid.ColumnHeaderStyle>
+                                    <Style TargetType="DataGridColumnHeader">
+                                        <Setter Property="Background" Value="#F8F9FA"/>
+                                        <Setter Property="Foreground" Value="#2C3E50"/>
+                                        <Setter Property="FontWeight" Value="SemiBold"/>
+                                        <Setter Property="Padding" Value="10,8"/>
+                                        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                        <Setter Property="BorderBrush" Value="#D7DBDD"/>
+                                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                    </Style>
+                                </DataGrid.ColumnHeaderStyle>
+
+                                <DataGrid.RowStyle>
+                                    <Style TargetType="DataGridRow">
+                                        <Setter Property="BorderBrush" Value="#ECF0F1"/>
+                                        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#F8F9FA"/>
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter Property="Background" Value="#E8F4FD"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGrid.RowStyle>
+
+                                <DataGrid.CellStyle>
+                                    <Style TargetType="DataGridCell">
+                                        <Setter Property="BorderThickness" Value="0"/>
+                                        <Setter Property="Padding" Value="10,8"/>
+                                        <Setter Property="Foreground" Value="#2C3E50"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter Property="Background" Value="Transparent"/>
+                                                <Setter Property="Foreground" Value="#2C3E50"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGrid.CellStyle>
+                            </DataGrid>
+
+                            <!-- Подвал таблицы -->
+                            <Border Grid.Row="2" 
+                                    Background="#F8F9FA" 
+                                    CornerRadius="0,0,5,5"
+                                    Padding="15,10"
+                                    BorderBrush="#D7DBDD"
+                                    BorderThickness="0,1,0,0">
+                                <TextBlock x:Name="TxtTotalInfo" 
+                                           Text="" 
+                                           FontSize="14"
+                                           FontWeight="SemiBold"
+                                           Foreground="#2C3E50"/>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <!-- Подпись -->
+                    <Border Margin="0,30,0,0" 
+                            BorderBrush="#D7DBDD" 
+                            BorderThickness="0,1,0,0"
+                            Padding="0,20">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Ответственный:" 
+                                           FontSize="12"
+                                           Foreground="#7F8C8D"/>
+                                <TextBlock x:Name="TxtResponsible" 
+                                           Text="Иванов А.Н."
+                                           FontSize="14"
+                                           FontWeight="SemiBold"
+                                           Foreground="#2C3E50"
+                                           Margin="0,5,0,0"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                                <TextBlock Text="М.П." 
+                                           FontSize="12"
+                                           Foreground="#7F8C8D"
+                                           Margin="0,0,0,20"/>
+                                <Border Width="150" 
+                                        Height="1" 
+                                        Background="#7F8C8D"
+                                        Margin="0,10,0,0"/>
+                                <TextBlock Text="Подпись" 
+                                           FontSize="12"
+                                           Foreground="#7F8C8D"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Примечание -->
+                    <Border Background="#FFF8E1" 
+                            CornerRadius="5" 
+                            Padding="15"
+                            Margin="0,20,0,0">
+                        <StackPanel>
+                            <TextBlock Text="📌 Примечание" 
+                                       FontSize="14"
+                                       FontWeight="Bold"
+                                       Foreground="#F39C12"
+                                       Margin="0,0,0,5"/>
+                            <TextBlock x:Name="TxtNote" 
+                                       Text="Отчет сформирован автоматически. Для получения официального документа нажмите «Сформировать PDF»."
+                                       FontSize="12"
+                                       Foreground="#7F8C8D"
+                                       TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</Page>
