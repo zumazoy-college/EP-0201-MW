@@ -24,12 +24,42 @@ namespace EP_0201_MW.Helpers
                 QuestPDF.Settings.License = LicenseType.Community;
 
                 string fileName = $"{reportTitle}_{DateTime.Now:yyyyMMdd_HHmmss}.pdf";
-                string filePath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                    "МастерСклад Отчеты",
-                    fileName);
 
-                Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                //string projectFolder = AppDomain.CurrentDomain.BaseDirectory;
+                //string reportsFolder = Path.Combine(projectFolder, "Reports");
+                //string filePath = Path.Combine(reportsFolder, fileName);
+
+                //// Создаем папку Reports, если её еще нет в проекте
+                //if (!Directory.Exists(reportsFolder))
+                //{
+                //    Directory.CreateDirectory(reportsFolder);
+                //}
+
+                // 1. Получаем путь к папке bin/Debug/...
+                string exePath = AppDomain.CurrentDomain.BaseDirectory;
+
+                // 2. Поднимаемся на 3-4 уровня вверх до корня проекта
+                DirectoryInfo projectDir = Directory.GetParent(exePath).Parent.Parent.Parent;
+
+                string reportsFolder;
+
+                // Если папка проекта найдена
+                if (projectDir != null && File.Exists(Path.Combine(projectDir.FullName, "EP-0201-MW.csproj")))
+                {
+                    reportsFolder = Path.Combine(projectDir.FullName, "reports");
+                }
+                else
+                {
+                    // Если .csproj не найден (например, программа уже установлена у клиента) сохраняем просто рядом с .exe
+                    reportsFolder = Path.Combine(exePath, "reports");
+                }
+
+                string filePath = Path.Combine(reportsFolder, fileName);
+
+                if (!Directory.Exists(reportsFolder))
+                {
+                    Directory.CreateDirectory(reportsFolder);
+                }
 
                 Document.Create(container =>
                 {
