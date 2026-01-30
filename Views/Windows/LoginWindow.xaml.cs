@@ -1,4 +1,5 @@
-﻿using EP_0201_MW.Models;
+﻿using EP_0201_MW.Helpers;
+using EP_0201_MW.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -37,6 +38,12 @@ namespace EP_0201_MW.Views.Windows
 
             using (MasterSkladDbContext db = new MasterSkladDbContext())
             {
+                if (!db.Database.CanConnect())
+                {
+                    MessageBox.Show("Ошибка подкючения к БД", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Information);
+                    this.DialogResult = true;
+                }
+
                 var user = db.Users
                     .Include(u => u.Employee)
                     .Include(u => u.Role)
@@ -53,6 +60,13 @@ namespace EP_0201_MW.Views.Windows
                     MessageBox.Show("Неверный логин или пароль", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
+        }
+
+        private void BtnSettings_Click(object sender, RoutedEventArgs e)
+        {
+            ConnectionWindow win = new ConnectionWindow();
+            win.Owner = this; // Чтобы окно было по центру LoginWindow
+            win.ShowDialog();
         }
     }
 }

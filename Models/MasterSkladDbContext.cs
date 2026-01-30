@@ -2,7 +2,10 @@
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
+using System.Reflection.Metadata;
+using System.Windows;
 
 namespace EP_0201_MW.Models;
 
@@ -43,15 +46,22 @@ public partial class MasterSkladDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+        //if (!optionsBuilder.IsConfigured)
+        //{
+        //    // Строим конфигурацию из файла appsettings.json
+        //    IConfigurationRoot configuration = new ConfigurationBuilder()
+        //        .SetBasePath(Directory.GetCurrentDirectory())
+        //        .AddJsonFile("appsettings.json")
+        //        .Build();
+
+        //    var connectionString = configuration.GetConnectionString("DefaultConnection");
+        //    optionsBuilder.UseSqlServer(connectionString);
+        //}
+
         if (!optionsBuilder.IsConfigured)
         {
-            // Строим конфигурацию из файла appsettings.json
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
-                .Build();
-
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
+            // Берем строку из менеджера
+            var connectionString = Helpers.ConnectionManager.GetConnectionString();
             optionsBuilder.UseSqlServer(connectionString);
         }
     }
